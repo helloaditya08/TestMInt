@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TestMint — PDF to Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <main>
+    <nav>
+      <a class="brand" href="#"><span class="brand-mark">✦</span> Test<span>Mint</span></a>
+      <div class="nav-links"><a href="#how">How it works</a><a href="#upload">Create test</a></div>
+      <button class="ghost small" id="demoBtn">Try demo</button>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">PDF TO PRACTICE TESTS</p>
+        <h1>Your notes, now<br><em>test-ready.</em></h1>
+        <p class="intro">Upload any study PDF. TestMint finds the questions, turns them into an interactive test, and helps you see what to revise next.</p>
+        <div class="hero-actions"><a class="button primary" href="#upload">Create a test <span>→</span></a><span class="tiny-note">No sign-up needed</span></div>
+      </div>
+      <div class="hero-card" aria-hidden="true">
+        <div class="card-top"><span>Biology • Chapter 4</span><span class="dots">•••</span></div>
+        <div class="progress"><i></i></div>
+        <p class="question-no">QUESTION 03 / 10</p>
+        <h3>Which organelle is known as the powerhouse of the cell?</h3>
+        <div class="fake-options"><div><b>A</b> Nucleus</div><div class="selected"><b>B</b> Mitochondria <span>✓</span></div><div><b>C</b> Ribosome</div><div><b>D</b> Vacuole</div></div>
+        <div class="card-bottom"><span>2 min left</span><button>Next question →</button></div>
+      </div>
+    </section>
+
+    <section class="upload-section" id="upload">
+      <div class="section-heading"><p class="eyebrow">MAKE YOUR TEST</p><h2>Bring your material.<br>We’ll do the rest.</h2></div>
+      <div class="upload-grid">
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="pdfInput" accept="application/pdf" hidden>
+          <div class="upload-icon">↑</div>
+          <h3>Drop your PDF here</h3>
+          <p>or <button id="browseBtn">browse files</button> from your computer</p>
+          <small>PDF up to 20 MB</small>
+        </div>
+        <div class="settings">
+          <label>Test title <input id="testTitle" type="text" placeholder="e.g. Biology midterm revision"></label>
+          <div class="field-row"><label>Questions <select id="questionCount"><option value="5">5 questions</option><option value="10" selected>10 questions</option><option value="15">15 questions</option><option value="20">20 questions</option><option value="30">30 questions</option><option value="40">40 questions</option></select><small id="questionHint">PDF questions are always included first.</small></label><label>Time limit <select id="timeLimit"><option value="0">No limit</option><option value="10">10 min</option><option value="20" selected>20 min</option><option value="30">30 min</option><option value="60">1 hour</option><option value="custom">Custom time</option></select><input id="customTime" type="number" min="1" max="300" placeholder="Minutes" hidden></label></div>
+          <label>Difficulty <div class="difficulty"><button class="level active" data-level="Balanced">Balanced</button><button class="level" data-level="Easy">Easy</button><button class="level" data-level="Challenge">Challenge</button></div></label>
+          <button class="button primary full" id="generateBtn" disabled>Generate test <span>→</span></button>
+        </div>
+      </div>
+      <div id="fileInfo" class="file-info" hidden></div>
+    </section>
+
+    <section class="how" id="how"><div><p class="eyebrow">SIMPLE BY DESIGN</p><h2>From PDF to practice<br>in three small steps.</h2></div><div class="steps"><article><span>01</span><h3>Upload</h3><p>Choose a question paper, notes, or chapter PDF.</p></article><article><span>02</span><h3>Generate</h3><p>We identify questions and shape your test.</p></article><article><span>03</span><h3>Learn</h3><p>Take the test and get instant feedback.</p></article></div></section>
+  </main>
+  <footer><a class="brand" href="#"><span class="brand-mark">✦</span> Test<span>Mint</span></a><span>Made for focused learning.</span></footer>
+
+  <section class="modal" id="editorModal" aria-hidden="true"><div class="modal-box editor-box"><button class="close" data-close>×</button><p class="eyebrow">REVIEW YOUR TEST</p><h2 id="editorTitle">Questions found</h2><p class="muted">Edit anything before starting. Mark the correct answer with the radio button.</p><div id="questionEditor"></div><div class="modal-actions"><button class="ghost" data-close>Back</button><button class="button primary" id="startTestBtn">Start test <span>→</span></button></div></div></section>
+  <section class="modal" id="testModal" aria-hidden="true"><div class="modal-box test-box"><button class="close" id="quitTest" title="Close test">×</button><div class="test-header"><div><p class="eyebrow" id="liveTitle">PRACTICE TEST</p><strong id="testCounter">Question 1 of 5</strong></div><div class="test-tools"><div class="timer" id="timer">∞</div><button class="icon-button" id="fullScreenBtn" title="Open full screen" aria-label="Open full screen">⛶</button></div></div><div class="progress live-progress"><i id="liveProgress"></i></div><div id="testBody"></div><div class="test-actions"><button class="ghost" id="prevBtn">← Back</button><button class="button primary" id="nextBtn">Next <span>→</span></button></div></div></section>
+  <section class="modal" id="resultModal" aria-hidden="true"><div class="modal-box result-box"><div class="score-orb"><span id="scorePercent">0%</span><small>score</small></div><p class="eyebrow">TEST COMPLETE</p><h2 id="resultHeadline">Nice work!</h2><p class="muted" id="resultText"></p><div class="result-stats"><div><b id="correctCount">0</b><span>Correct</span></div><div><b id="incorrectCount">0</b><span>To revise</span></div><div><b id="answeredCount">0</b><span>Answered</span></div><div><b id="timeTaken">0m</b><span>Time used</span></div></div><div id="analysisSummary" class="analysis-summary"></div><div id="analysisList" class="analysis-list"></div><button class="button primary full" id="restartBtn">Take another test <span>→</span></button></div></section>
+  <section class="modal" id="confirmModal" aria-hidden="true"><div class="modal-box confirm-box"><p class="eyebrow">SUBMIT TEST</p><h2>Finish your test?</h2><p class="muted" id="confirmText">Your unanswered questions will be counted as incorrect.</p><div class="modal-actions"><button class="ghost" id="cancelFinishBtn">Keep working</button><button class="button primary" id="confirmFinishBtn">Yes, finish test <span>✓</span></button></div></div></section>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
