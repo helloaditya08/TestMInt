@@ -12,7 +12,8 @@ const schema = {
   required:['questions']
 };
 
-function json(res,status,body){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(body));}
+function corsHeaders(){return {'Access-Control-Allow-Origin':process.env.ALLOWED_ORIGIN||'*','Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type'};}
+function json(res,status,body){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8',...corsHeaders()});res.end(JSON.stringify(body));}
 async function body(req){let raw='';for await(const chunk of req){raw+=chunk;if(raw.length>30_000_000) throw new Error('PDF is too large. Please upload a PDF below 20 MB.')}return JSON.parse(raw);}
 async function generate({text,pdfData,count,difficulty,sourceQuestionCount}){
   if(!process.env.GEMINI_API_KEY) throw new Error('Server is not configured. Add GEMINI_API_KEY to your environment and restart the server.');
@@ -36,6 +37,7 @@ Return exactly ${Math.max(Number(count)||10,Number(sourceQuestionCount)||0)} que
   return parsed.questions;
 }
 http.createServer(async(req,res)=>{
+  if(req.method==='OPTIONS'&&req.url==='/api/generate-test'){res.writeHead(204,corsHeaders());res.end();return;}
   if(req.method==='POST'&&req.url==='/api/generate-test'){
     try{const result=await generate(await body(req));json(res,200,{questions:result});}catch(error){json(res,400,{error:error.message});}return;
   }
@@ -44,3 +46,4 @@ http.createServer(async(req,res)=>{
   if(!file.startsWith(root)||!fs.existsSync(file)||fs.statSync(file).isDirectory()){res.writeHead(404);res.end('Not found');return;}
   res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream'});fs.createReadStream(file).pipe(res);
 }).listen(port,()=>console.log(`TestMint running at http://localhost:${port}`));
+
